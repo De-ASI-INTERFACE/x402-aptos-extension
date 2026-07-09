@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: 'Please cite as below if using x402-Aptos Extension.'
+title: 'x402-Aptos: HTTP 402 Payment-Gated Routing on Aptos'
+version: 1.0.0
+date-released: '2026-07-09'
+type: software
+authors:
+  - family-names: Patterson
+    given-names: Richard
+    alias: De-ASI-INTERFACE
+    country: US
+repository-code: 'https://github.com/De-ASI-INTERFACE/x402-aptos-extension'
+license: MIT
+abstract: >-
+  x402 HTTP 402 payment-gated routing for Aptos Move VM. APT Coin and
+  Fungible Asset payment gates, Liquidswap v1 routing, Block-STM parallel
+  execution, Keyless ZK account authorization, sequence number replay
+  prevention, Lean 4 formal verification.
+keywords: [aptos, move, x402, http-402, fungible-asset, liquidswap, keyless, lean4, richard-patterson]
