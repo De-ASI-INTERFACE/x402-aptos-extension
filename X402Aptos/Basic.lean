@@ -1,27 +1,34 @@
--- x402-Aptos Basic | Author: Richard Patterson (@De-ASI-INTERFACE)
-import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Nat.Basic
+-- ============================================================
+-- x402-Aptos: Basic Re-export Shim
+-- Author: Richard Patterson (@De-ASI-INTERFACE)
+-- Date: 2026-07-09
+-- Chain: Aptos / Fungible Asset / Liquidswap v1
+--
+-- Re-exports X402Aptos.PaymentVerification as the single
+-- authoritative source of all shared types and definitions.
+-- Chain-prefixed theorem aliases are provided for ergonomic use.
+--
+-- Note: Aptos uses a monotone account sequence_number for
+-- replay protection (Move resource model), so replay_prevented
+-- returns an equality: a.sequence_number = s.current_sequence.
+-- ============================================================
+import X402Aptos.PaymentVerification
 
 namespace X402Aptos
 
-structure PaymentAuth where
-  sequence_number : Nat
-  amount          : Nat
-  expiration_ts   : Nat
-  deriving Repr, DecidableEq
+/-- Alias: sequence freshness under the Aptos chain prefix.
+    Aptos replay protection is enforced by Move account
+    sequence_number equality: a.sequence_number = s.current_sequence. -/
+theorem aptos_replay_prevented
+    (a : PaymentAuth) (s : FacilitatorState) (h : verify a s) :
+    a.sequence_number = s.current_sequence :=
+  replay_prevented a s h
 
-structure AccountState where
-  current_sequence : Nat
-  block_time       : Nat
-  deriving Repr
-
-def verify (a : PaymentAuth) (s : AccountState) : Prop :=
-  a.sequence_number = s.current_sequence ∧ s.block_time ≤ a.expiration_ts
-
-theorem aptos_seq_valid (a : PaymentAuth) (s : AccountState) (h : verify a s)
-    : a.sequence_number = s.current_sequence := h.1
-
-theorem aptos_not_expired (a : PaymentAuth) (s : AccountState) (h : verify a s)
-    : s.block_time ≤ a.expiration_ts := h.2
+/-- Alias: expiry enforcement under the Aptos chain prefix.
+    Delegates to within_expiry: s.block_time ≤ a.expiration_ts. -/
+theorem aptos_not_expired
+    (a : PaymentAuth) (s : FacilitatorState) (h : verify a s) :
+    s.block_time ≤ a.expiration_ts :=
+  within_expiry a s h
 
 end X402Aptos
